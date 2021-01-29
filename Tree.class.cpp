@@ -136,3 +136,65 @@ void	Btree::printBtree(t_node *leaf, int space)
 		printBtree(leaf->left, space);
 	}
 }
+
+void	Btree::printInAFantasticWay()
+{
+	if (root == NULL)
+		return ;
+	std::cout << root->key << std::endl;
+	printInAFantasticWay(root, "");
+	std::cout << std::endl;
+}
+
+void	Btree::printInAFantasticWay(t_node *leaf, std::string const & prefix)
+{
+	if (leaf == NULL)
+		return ;
+	bool	hasLeft = (leaf->left != NULL);
+	bool	hasRight = (leaf->right != NULL);
+
+	if (!hasLeft && !hasRight)
+		return ;
+	std::cout << prefix;
+	std::cout << ((hasLeft  && hasRight) ? "├── " : "");
+    std::cout << ((!hasLeft && hasRight) ? "└── " : "");
+
+	if (hasLeft)
+	{
+		bool	printStrand = (hasLeft && hasRight && (leaf->right->right != NULL || leaf->right->left != NULL));
+		std::string newPrefix = prefix + (printStrand ? "│   " : "    ");
+		std::cout << leaf->right->key << std::endl;
+		printInAFantasticWay(leaf->right, newPrefix);
+	}
+
+	if (hasLeft)
+	{
+		std::cout << (hasRight ? prefix : "") << "└── " << leaf->left->key << std::endl;
+		printInAFantasticWay(leaf->left, prefix + "    ");
+	}
+}
+
+void	Btree::printInPrettyWay()
+{
+	if (root == NULL)
+		return ;
+	printInPrettyWay(root, 0);
+}
+
+void	Btree::printInPrettyWay(t_node *leaf, int indent)
+{
+	if (leaf != NULL)
+	{
+		if (leaf->right)
+			printInPrettyWay(leaf->right, indent + 4);
+		if (indent)
+			std::cout << std::setw(indent) << ' ';
+		if (leaf->right) std::cout << " /\n" << std::setw(indent) << ' ';
+		std::cout << leaf->key << std::endl;
+		if (leaf->key)
+		{
+			std::cout << std::setw(indent) << ' ' << " \\\n";
+			printInPrettyWay(leaf->left, indent + 4);
+		}
+	}
+}
